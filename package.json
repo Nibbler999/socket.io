@@ -15,15 +15,15 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/socketio/socket.io"
+    "url": "git://github.com/Nibbler999/socket.io"
   },
   "scripts": {
     "test": "gulp test"
   },
   "dependencies": {
-    "engine.io": "1.6.11",
-    "socket.io-parser": "2.2.6",
-    "socket.io-client": "1.4.8",
+    "engine.io": "Nibbler999/engine.io",
+    "socket.io-parser": "Nibbler999/socket.io-parser",
+    "socket.io-client": "Nibbler999/socket.io-client",
     "socket.io-adapter": "0.4.0",
     "has-binary": "0.1.7",
     "debug": "2.2.0"
