@@ -1,10 +1,10 @@
 
 # socket.io
 
-[![Build Status](https://secure.travis-ci.org/socketio/socket.io.svg)](https://travis-ci.org/socketio/socket.io)
+[![Build Status](https://secure.travis-ci.org/socketio/socket.io.svg?branch=master)](https://travis-ci.org/socketio/socket.io)
 [![Dependency Status](https://david-dm.org/socketio/socket.io.svg)](https://david-dm.org/socketio/socket.io)
 [![devDependency Status](https://david-dm.org/socketio/socket.io/dev-status.svg)](https://david-dm.org/socketio/socket.io#info=devDependencies)
-![NPM version](https://badge.fury.io/js/socket.io.svg)
+[![NPM version](https://badge.fury.io/js/socket.io.svg)](https://www.npmjs.com/package/socket.io)
 ![Downloads](https://img.shields.io/npm/dm/socket.io.svg?style=flat)
 [![](http://slack.socket.io/badge.svg?)](http://slack.socket.io)
 
@@ -317,7 +317,7 @@ server.listen(3000);
 
   A reference to the underlying `Client` transport connection (engine.io
   `Socket` object). This allows access to the IO transport layer, which
-  still (mostly) asbtracts the actual TCP/IP socket.
+  still (mostly) abstracts the actual TCP/IP socket.
 
 ### Socket#request:Request
 
@@ -402,7 +402,24 @@ server.listen(3000);
     
   Disconnects this client. If value of close is `true`, closes the underlying connection. 
   Otherwise, it just disconnects the namespace.
-    
+
+#### Events
+
+- `disconnect`
+    - Fired upon disconnection.
+    - **Arguments**
+      - `String`: the reason of the disconnection (either client or server-side)
+- `error`
+    - Fired when an error occurs.
+    - **Arguments**
+      - `Object`: error data
+- `disconnecting`
+    - Fired when the client is going to be disconnected (but hasn't left its `rooms` yet).
+    - **Arguments**
+      - `String`: the reason of the disconnection (either client or server-side)
+
+These are reserved events (along with `connect`, `newListener` and `removeListener`) which cannot be used as event names.
+
 
 ### Client
 
@@ -445,4 +462,4 @@ The `gulp` task `test` will always transpile the source code into es5 and export
 
 ## License
 
-MIT
+[MIT](LICENSE)

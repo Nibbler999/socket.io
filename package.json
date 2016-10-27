@@ -1,6 +1,6 @@
 {
   "name": "socket.io",
-  "version": "1.4.8",
+  "version": "1.5.1",
   "description": "node.js realtime framework server",
   "keywords": [
     "realtime",
@@ -12,6 +12,9 @@
     "io"
   ],
   "main": "./lib/index",
+  "files": [
+    "lib/"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -40,8 +43,7 @@
     "istanbul": "0.4.1",
     "mocha": "2.3.4",
     "superagent": "1.6.1",
-    "supertest": "1.1.0",
-    "zuul-ngrok": "3.2.0"
+    "supertest": "1.1.0"
   },
   "contributors": [
     {
