@@ -167,7 +167,7 @@ describe('socket.io', function(){
           if (err) return done(err);
           var ctype = res.headers['content-type'];
           expect(ctype).to.be('application/javascript');
-          expect(res.headers.etag).to.be(clientVersion);
+          expect(res.headers.etag).to.be('"' + clientVersion + '"');
           expect(res.text).to.match(/engine\.io/);
           expect(res.status).to.be(200);
           done();
@@ -179,7 +179,7 @@ describe('socket.io', function(){
         io(srv);
         request(srv)
         .get('/socket.io/socket.io.js')
-        .set('If-None-Match', clientVersion)
+        .set('If-None-Match', '"' + clientVersion + '"')
         .end(function(err, res){
           if (err) return done(err);
           expect(res.statusCode).to.be(304);
@@ -399,7 +399,7 @@ describe('socket.io', function(){
       var net    = require('net');
       var server = net.createServer();
 
-      var clientSocket = ioc('ws://0.0.0.0:' + PORT);
+      var clientSocket = ioc('ws://0.0.0.0:' + PORT, { reconnection: false });
 
       clientSocket.on('disconnect', function init() {
         expect(Object.keys(sio.nsps['/'].sockets).length).to.equal(0);
@@ -1670,7 +1670,7 @@ describe('socket.io', function(){
       var srv = http();
       var sio = io(srv);
       srv.listen(function(){
-        var socket = client(srv);
+        var socket = client(srv, { reconnection: false });
         sio.on('connection', function(s){
           s.conn.on('upgrade', function(){
             console.log('\033[96mNote: warning expected and normal in test.\033[39m');
@@ -1687,7 +1687,7 @@ describe('socket.io', function(){
       var srv = http();
       var sio = io(srv);
       srv.listen(function(){
-        var socket = client(srv);
+        var socket = client(srv, { reconnection: false });
         sio.on('connection', function(s){
           s.once('error', function(err){
             expect(err.message).to.match(/Illegal attachments/);
@@ -2212,6 +2212,97 @@ describe('socket.io', function(){
         chat.on('connect', function() {
           expect(result).to.eql([1, 2, 3, 4]);
           done();
+        });
+      });
+    });
+  });
+
+  describe('socket middleware', function(done){
+    var Socket = require('../lib/socket');
+
+    it('should call functions', function(done){
+      var srv = http();
+      var sio = io(srv);
+      var run = 0;
+
+      srv.listen(function(){
+        var socket = client(srv, { multiplex: false });
+
+        socket.emit('join', 'woot');
+
+        sio.on('connection', function(socket){
+          socket.use(function(event, next){
+            expect(event).to.eql(['join', 'woot']);
+            event.unshift('wrap');
+            run++;
+            next();
+          });
+          socket.use(function(event, next){
+            expect(event).to.eql(['wrap', 'join', 'woot']);
+            run++;
+            next();
+          });
+          socket.on('wrap', function(data1, data2){
+            expect(data1).to.be('join');
+            expect(data2).to.be('woot');
+            expect(run).to.be(2);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should pass errors', function(done){
+      var srv = http();
+      var sio = io(srv);
+
+      srv.listen(function(){
+        var socket = client(srv, { multiplex: false });
+
+        socket.emit('join', 'woot');
+
+        sio.on('connection', function(socket){
+          socket.use(function(event, next){
+            next(new Error('Authentication error'));
+          });
+          socket.use(function(event, next){
+            done(new Error('nope'));
+          });
+
+          socket.on('join', function(){
+            done(new Error('nope'));
+          });
+          socket.on('error', function(err){
+            expect(err).to.be('Authentication error');
+            done();
+          });
+        });
+      });
+    });
+
+    it('should pass `data` of error object', function(done){
+      var srv = http();
+      var sio = io(srv);
+
+      srv.listen(function(){
+        var socket = client(srv, { multiplex: false });
+
+        socket.emit('join', 'woot');
+
+        sio.on('connection', function(socket){
+          socket.use(function(event, next){
+            var err = new Error('Authentication error');
+            err.data = { a: 'b', c: 3 };
+            next(err);
+          });
+
+          socket.on('join', function(){
+            done(new Error('nope'));
+          });
+          socket.on('error', function(err){
+            expect(err).to.eql({ a: 'b', c: 3 });
+            done();
+          });
         });
       });
     });
