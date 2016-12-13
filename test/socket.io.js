@@ -2257,9 +2257,14 @@ describe('socket.io', function(){
       var sio = io(srv);
 
       srv.listen(function(){
-        var socket = client(srv, { multiplex: false });
+        var clientSocket = client(srv, { multiplex: false });
 
-        socket.emit('join', 'woot');
+        clientSocket.emit('join', 'woot');
+
+        clientSocket.on('error', function(err){
+          expect(err).to.be('Authentication error');
+          done();
+        });
 
         sio.on('connection', function(socket){
           socket.use(function(event, next){
@@ -2272,10 +2277,6 @@ describe('socket.io', function(){
           socket.on('join', function(){
             done(new Error('nope'));
           });
-          socket.on('error', function(err){
-            expect(err).to.be('Authentication error');
-            done();
-          });
         });
       });
     });
@@ -2285,9 +2286,14 @@ describe('socket.io', function(){
       var sio = io(srv);
 
       srv.listen(function(){
-        var socket = client(srv, { multiplex: false });
+        var clientSocket = client(srv, { multiplex: false });
 
-        socket.emit('join', 'woot');
+        clientSocket.emit('join', 'woot');
+
+        clientSocket.on('error', function(err){
+          expect(err).to.eql({ a: 'b', c: 3 });
+          done();
+        });
 
         sio.on('connection', function(socket){
           socket.use(function(event, next){
@@ -2298,10 +2304,6 @@ describe('socket.io', function(){
 
           socket.on('join', function(){
             done(new Error('nope'));
-          });
-          socket.on('error', function(err){
-            expect(err).to.eql({ a: 'b', c: 3 });
-            done();
           });
         });
       });

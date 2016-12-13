@@ -1,6 +1,6 @@
 {
   "name": "socket.io",
-  "version": "1.5.1",
+  "version": "1.7.2",
   "description": "node.js realtime framework server",
   "keywords": [
     "realtime",
@@ -24,12 +24,13 @@
     "test": "gulp test"
   },
   "dependencies": {
+    "debug": "2.3.3",
     "engine.io": "Nibbler999/engine.io",
-    "socket.io-parser": "Nibbler999/socket.io-parser",
-    "socket.io-client": "Nibbler999/socket.io-client",
-    "socket.io-adapter": "0.4.0",
     "has-binary": "0.1.7",
-    "debug": "2.2.0"
+    "object-assign": "4.1.0",
+    "socket.io-adapter": "0.5.0",
+    "socket.io-client": "Nibbler999/socket.io-client",
+    "socket.io-parser": "Nibbler999/socket.io-parser"
   },
   "devDependencies": {
     "babel-preset-es2015": "6.3.13",
