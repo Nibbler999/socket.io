@@ -26,7 +26,7 @@
   "dependencies": {
     "debug": "2.3.3",
     "engine.io": "Nibbler999/engine.io",
-    "has-binary": "0.1.7",
+    "has-binary": "Nibbler999/has-binary",
     "object-assign": "4.1.0",
     "socket.io-adapter": "0.5.0",
     "socket.io-client": "Nibbler999/socket.io-client",
