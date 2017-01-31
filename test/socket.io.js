@@ -251,7 +251,7 @@ describe('socket.io', function(){
       request.get('http://localhost:54013/socket.io/default/')
        .query({ transport: 'polling' })
        .end(function (err, res) {
-          expect(res.status).to.be(400);
+          expect(res.status).to.be(403);
           done();
         });
     });
@@ -262,7 +262,7 @@ describe('socket.io', function(){
        .query({ transport: 'polling' })
        .set('origin', 'http://herp.derp')
        .end(function (err, res) {
-          expect(res.status).to.be(400);
+          expect(res.status).to.be(403);
           done();
        });
     });
@@ -305,7 +305,7 @@ describe('socket.io', function(){
        .set('origin', 'http://herp.derp')
        .query({ transport: 'polling' })
        .end(function (err, res) {
-          expect(res.status).to.be(400);
+          expect(res.status).to.be(403);
           done();
         });
     });
@@ -357,7 +357,7 @@ describe('socket.io', function(){
        .set('origin', 'http://foo.example')
        .query({ transport: 'polling' })
        .end(function (err, res) {
-          expect(res.status).to.be(400);
+          expect(res.status).to.be(403);
           done();
         });
     });
@@ -1704,7 +1704,7 @@ describe('socket.io', function(){
       var srv = http();
       var sio = io(srv);
       srv.listen(function(){
-        var socket = client(srv);
+        var socket = client(srv, { reconnection: false });
         sio.on('connection', function(s){
           s.once('error', function(err){
             expect(err.message).to.match(/Illegal attachments/);
