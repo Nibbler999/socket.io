@@ -40,6 +40,7 @@
     - [socket.emit(eventName[, ...args][, ack])](#socketemiteventname-args-ack)
     - [socket.on(eventName, callback)](#socketoneventname-callback)
     - [socket.join(room[, callback])](#socketjoinroom-callback)
+    - [socket.join(rooms[, callback])](#socketjoinrooms-callback)
     - [socket.leave(room[, callback])](#socketleaveroom-callback)
     - [socket.to(room)](#sockettoroom)
     - [socket.in(room)](#socketinroom)
@@ -413,7 +414,7 @@ socket.emit('hello', 'world');
 socket.emit('with-binary', 1, '2', { 3: '4', 5: new Buffer(6) });
 ```
 
-The `ack` argument is optional and will be called with the server answer.
+The `ack` argument is optional and will be called with the client's answer.
 
 ```js
 var io = require('socket.io')();
@@ -475,6 +476,14 @@ io.on('connection', function(client){
   });
 });
 ```
+
+#### socket.join(rooms[, callback])
+
+  - `rooms` _(Array)_
+  - `callback` _(Function)_
+  - **Returns** `Socket` for chaining
+
+Adds the client to the list of room, and fires optionally a callback with `err` signature (if any).
 
 #### socket.leave(room[, callback])
 

@@ -28,7 +28,7 @@
     "engine.io": "Nibbler999/engine.io",
     "has-binary": "Nibbler999/has-binary",
     "object-assign": "4.1.0",
-    "socket.io-adapter": "0.5.0",
+    "socket.io-adapter": "~1.1.0",
     "socket.io-client": "Nibbler999/socket.io-client",
     "socket.io-parser": "Nibbler999/socket.io-parser"
   },
