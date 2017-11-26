@@ -1,12 +1,5 @@
-var testVersion = process.env.TEST_VERSION;
 var http = require('http').Server;
-var io;
-if (testVersion === 'compat') {
-  console.log('testing compat version');
-  io = require('../dist');
-} else {
-  io = require('../lib');
-}
+var io = require('../lib');
 var fs = require('fs');
 var join = require('path').join;
 var exec = require('child_process').exec;
@@ -429,18 +422,9 @@ describe('socket.io', function(){
   });
 
   describe('namespaces', function(){
-    var Socket;
-    if (testVersion === 'compat') {
-      Socket = require('../dist/socket');
-    } else {
-      Socket = require('../lib/socket');
-    }
-    var Namespace;
-    if (testVersion === 'compat') {
-      Namespace = require('../dist/namespace');
-    } else {
-      Namespace = require('../lib/namespace');
-    }
+    var Socket = require('../lib/socket');
+    var Namespace = require('../lib/namespace');
+
     it('should be accessible through .sockets', function(){
       var sio = io();
       expect(sio.sockets).to.be.a(Namespace);
@@ -1680,6 +1664,23 @@ describe('socket.io', function(){
       });
     });
 
+    it('should not crash when receiving an error packet without handler', function(done){
+      var srv = http();
+      var sio = io(srv);
+      srv.listen(function(){
+        var socket = client(srv, { reconnection: false });
+        sio.on('connection', function(s){
+          s.conn.on('upgrade', function(){
+            console.log('\033[96mNote: warning expected and normal in test.\033[39m');
+            socket.io.engine.write('44["handle me please"]');
+            setTimeout(function(){
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+
     it('should not crash with raw binary', function(done){
       var srv = http();
       var sio = io(srv);
@@ -2087,12 +2088,7 @@ describe('socket.io', function(){
   });
 
   describe('middleware', function(done){
-    var Socket;
-    if (testVersion === 'compat') {
-      Socket = require('../dist/socket');
-    } else {
-      Socket = require('../lib/socket');
-    }
+    var Socket = require('../lib/socket');
 
     it('should call functions', function(done){
       var srv = http();
@@ -2221,6 +2217,19 @@ describe('socket.io', function(){
           expect(result).to.eql([1, 2, 3, 4]);
           done();
         });
+      });
+    });
+
+    it('should disable the merge of handshake packets', function(done){
+      var srv = http();
+      var sio = io();
+      sio.use(function(socket, next){
+        next();
+      });
+      sio.listen(srv);
+      var socket = client(srv);
+      socket.on('connect', function(){
+        done();
       });
     });
   });
